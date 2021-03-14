@@ -1,0 +1,25 @@
+public class TestDemo {
+    public static void main(String[] args) {
+        /*int[] array = {4,4,3,2,6,5,7,10,3,4,5};
+        for (int x : array) {
+            System.out.print(x+" ");
+        }
+        System.out.println();
+        Solution solution = new Solution();
+        solution.sort(array);
+        for (int x : array) {
+            System.out.print(x+" ");
+        }
+        System.out.println();*/
+        int[] array = {4,4,3,2,6,5,7,10,3,4,5};
+        for (int x : array) {
+            System.out.print(x+" ");
+        }
+        System.out.println();
+        Solution2 solution2 = new Solution2();
+        solution2.mergeSort(array,0,array.length-1);
+        for (int x : array) {
+            System.out.print(x+" ");
+        }
+    }
+}
