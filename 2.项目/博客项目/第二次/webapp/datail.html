@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文章详情页</title>
+    <script src="jquery-1.9.1.min.js"></script>
+    <script>
+        function myck(mytime) {
+            var date = new Date(mytime);
+            var y = date.getFullYear();
+            var m = date.getMonth()+1;
+            var d = date.getDate();
+            return y+"-"+m+"-"+d;
+        }
+
+        jQuery(function () {
+            //从url中获取文章的id
+            var id = parseInt(location.search.split("=")[1]);
+            jQuery.getJSON("datail",{
+                "id":id,
+            },function (data) {
+                if (data != null && data.state == 200) {
+                    //查询到了文章的详情，将值赋值给前端
+                    var art = data.art;
+                    jQuery("#title").html(art.title);
+                    jQuery("#content").html(art.content);
+                    jQuery("#rcount").html(art.rcount);
+                    jQuery("#username").html(art.username);
+                    jQuery("#createtime").html(myck(art.createtime));
+                } else {
+                    alert("文章详情查询失败："+data.msg);
+                }
+            });
+
+            //文章详情显示出来以后进行访问量+1
+            jQuery.getJSON("rcount",{
+                "id":id,
+            },function (data) {
+
+            })
+        });
+
+    </script>
+</head>
+<body>
+    <div>
+        <h2>文章详情</h2>
+        标题：<span id="title"></span>
+        <p></p>
+        正文：<span id="content"></span>
+        <p></p>
+        阅读量：<span id="rcount"></span>
+        &nbsp&nbsp&nbsp&nbsp
+        作者：<span id="username"></span>
+        &nbsp&nbsp&nbsp&nbsp
+        创建时间：<span id="createtime"></span>
+
+    </div>
+</body>
+</html>

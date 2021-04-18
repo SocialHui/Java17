@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的文章修改页面</title>
+    <script src="jquery-1.9.1.min.js"></script>
+    <script>
+        //到达这个页面以后直接执行下面的jQuery
+        var id = 0;
+        jQuery(function () {
+
+            //获取文章的id
+            var thisParam = location.search.substring(1);
+            id = thisParam.split("=")[1];
+
+            //查询数据库信息并且展示
+            jQuery.getJSON("initart",{"id":id},function (data) {
+                if (data != null && data.state == 1) {
+                    var articleinfo = data.articleinfo;
+                    jQuery("#title").val(articleinfo.title);
+                    jQuery("#content").val(articleinfo.content);
+                } else {
+                    alert("查询失败"+data.msg);
+                }
+            })
+        });
+
+
+        //数据修改提交
+        function mysub(type) {
+            var content = jQuery("#content");
+            var title = jQuery("#title");
+            if (type == 2) {
+                //代表要进行清空操作
+                if (confirm("是否确认清空")) {
+                    content.val("");
+                    title.val("");
+                }
+                return false;
+            }
+            if (title.val().trim() == "") {
+                alert("请先输入标题");
+                title.focus();
+                return false;
+            }
+            if (content.val().trim() == "") {
+                alert("请先输入正文");
+                content.focus();
+                return false;
+            }
+            jQuery.getJSON("upart",{
+                "id": id,
+                "title":title.val(),
+                "content":content.val()
+            }, function (data) {
+                if (data != null && data.succ == 1) {
+                    alert("修改成功");
+                } else {
+                    alert("修改失败"+data.msg);
+                }
+                }
+            );
+        }
+    </script>
+</head>
+<body>
+     <div style="text-align: center; margin-top: 20px;">
+         <h1>文章修改</h1>
+         标题：<input id="title" name="title" type="text">
+         <p></p>
+         正文：<textarea style="width: 50%; height: 300px;" id="content" name="content" type="text"></textarea>
+         <p></p>
+         <input type="button" value="提交" onclick="mysub(1)">
+         <input type="button" value="清空" onclick="mysub(2)">
+     </div>
+</body>
+</html>

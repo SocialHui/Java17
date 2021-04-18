@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>全部文章列表</title>
+    <script src="jquery-1.9.1.min.js"></script>
+    <script>
+        //全局变量，代表当前页
+        var currpage = 1;
+
+        // 时间格式化
+        function datefm(timespan) {
+            var date = new Date(timespan);
+            // 获得年份
+            var y = date.getFullYear();
+            // 获得月份【注意+1】
+            var m = date.getMonth() + 1;
+            // 获得日期
+            var d = date.getDate();
+            return y + "-" + m + "-" + d;
+        }
+
+        jQuery(function () {
+
+            var myparams = location.search;
+
+            if (myparams != "") {
+                currpage = parseInt(myparams.split("=")[1]);
+            }
+
+            jQuery.getJSON("list",{
+                "cpage":currpage,
+                "psize": 2
+            },function (data) {
+                if (data != null && data.list != null) {
+                    var html = "";
+                    for (var i = 0; i < data.list.length; i++) {
+                        var ch = data.list[i];
+                        html += "<tr>" +
+                        "<td>" + ch.id + "</td>"+
+
+                        "<td> <a href='detail.html?id=>"+ch.id+"'>" + ch.title +"</a></td>"+
+
+                        "<td>" + datefm(ch.createtime) +"</td>"+
+                        "<td>" + ch.rcount + "</td>"+
+                        "<td>" + ch.username + "</td>"+
+                        "</tr>";
+                    }
+                    jQuery("#tab").append(html);
+                } else {
+                    alert("查询失败"+data.msg);
+                }
+            });
+        });
+
+        function mypage(type) {
+            if(type == 1) {
+                //代表执行上一页
+                if (currpage > 1) {
+                    //代表正常跳转
+                    location.href = "list.html?c=" + (currpage - 1);
+                } else {
+                    //代表已经是第一页，不可以继续向前跳转了
+                    alert("当前在第一页");
+                    return false;
+                }
+            } else {
+                //代表执行下一页
+                location.href = "list.html?c=" + (currpage + 1);
+            }
+        }
+    </script>
+</head>
+<body>
+     <div style="text-align: center">
+         <h1>所有文章列表</h1>
+         <table border="1" id="tab" style="width: 60%;margin-left: 200px;">
+             <tr>
+                 <td>编号</td>
+                 <td>标题</td>
+                 <td>发布时间</td>
+                 <td>阅读量</td>
+                 <td>作者</td>
+             </tr>
+         </table>
+         <p></p>
+         <a href="javascript:mypage(1)">上一页</a> <a href="javascript:mypage(2)">下一页</a>
+     </div>
+</body>
+</html>
