@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加文章</title>
+    <script src="jquery-1.9.1.min.js"></script>
+    <script>
+        function myck(type) {
+
+            var title = jQuery("#title");
+            var content = jQuery("#content");
+
+            if (type == 2) {
+                if (confirm("确认清空吗？")) {
+                    title.val("");
+                    content.val("");
+                    return false;
+                }
+            } else {
+                if (title.val().trim() == "") {
+                    alert("请输入标题");
+                    title.focus();
+                    return false;
+                }
+                if (content.val().trim() == "") {
+                    alert("请输入正文");
+                    content.focus();
+                    return false;
+                }
+
+                jQuery.getJSON("addart",{
+                    //添加文章的时候需要知道作者的id
+                    //作者的id从session信息中可以查询到
+                    "title":title.val(),
+                    "content":content.val(),
+                },function (data) {
+                    if (data != null && data.state == 200) {
+                        //添加成功
+                        alert("添加成功");
+                        //添加成功之后跳转到我的文章列表
+                    } else {
+                        //添加失败
+                        alert("添加失败" + data.msg);
+                    }
+                })
+            }
+        }
+    </script>
+</head>
+<body>
+  <div>
+      <h1>添加文章</h1>
+      标题：<input type="text" id="title" name="title">
+      <p></p>
+      正文：<textarea id="content" name="content" style="width: 50%; height: 300px;"></textarea>
+      <p></p>
+      <input type="button" value="提交" onclick="myck(1)">
+      <input type="button" value="清空" onclick="myck(2)">
+  </div>
+</body>
+</html>

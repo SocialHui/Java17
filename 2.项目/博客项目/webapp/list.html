@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>所有人文章列表</title>
+    <script src="jquery-1.9.1.min.js"></script>
+    <script>
+
+        //  全局参数，当前页
+        var currpage = 1;
+
+        //分页功能
+        function mypage(type){
+            if (type == 1) {
+                //代表跳转到上一页
+                if (currpage > 1) {
+                    //代表正常跳转到上一页
+                    location.href = "list.html?c="+(currpage-1);
+                } else {
+                    //代表当前页已经是第一页，无需跳转
+                    alert("已经是第一页，不可跳转");
+                    return false;
+                }
+            } else {
+                //代表跳转到下一页
+                location.href = "list.html?c="+(currpage+1);
+            }
+        }
+
+        //时间格式化
+        function datefm(timespan) {
+           var date = new Date(timespan);
+           //获得年
+            var y = date.getFullYear();
+            //获得月
+            var m = date.getMonth()+1;
+            //获得日期
+            var d = date.getDate();
+            return y+"-"+m+"-"+d;
+        }
+
+        //页面出来的时候直接去后台进行操作
+        jQuery(function () {
+
+            //1.正确赋值  currpage页码
+            var myparams = location.search;
+            if (myparams != "") {
+                currpage = parseInt(myparams.split("=")[1]);
+            }
+
+            //查询并返回数据
+            jQuery.getJSON("list",{
+                //查询所有人的文章列表的时候不需要给后台传递参数
+
+                //分页查询时需要传参数
+                "cpage":currpage,  //当前页数
+                "psize":2  //每页展示的最大条数
+            },function (data) {
+                if (data != null && data.state==200) {
+                    var html = null;
+                    for (var i = 0; i < data.list.length; i++) {
+                        var articleinfo = data.list[i];
+                        html += "<tr>"+
+                        "<td>"+articleinfo.id+"</td>"+
+                        "<td>"+articleinfo.title+"</td>"+
+                        "<td>"+datefm(articleinfo.createtime)+"</td>"+
+                        "<td>"+articleinfo.rcount+"</td>"+
+                        "<td>"+articleinfo.username+"</td>"+
+                        "</tr>"
+                    }
+                    jQuery("#tab").append(html);
+                } else {
+                    alert("所有人文章列表查询失败"+data.msg);
+                }
+            });
+        })
+    </script>
+</head>
+<body>
+    <div style="text-align: center">
+        <h1>所有文章列表</h1>
+        <table id="tab" name="tab" style="width: 80%; margin-left: 100px;" border="1" cellspacing="0">
+            <tr>
+                <td>编号</td>
+                <td>标题</td>
+                <td>创建时间</td>
+                <td>阅读量</td>
+                <td>作者</td>
+            </tr>
+        </table>
+        <hr>
+
+        <!--去执行js事件-->
+        <!--页面加载出来以后直接去执行这个js事件-->
+        <a href="javascript:mypage(1)">上一页</a> <a href="javascript:mypage(2)">下一页</a>
+    </div>
+</body>
+</html>

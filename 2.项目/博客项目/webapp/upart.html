@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文章修改</title>
+    <script src="jquery-1.9.1.min.js"></script>
+    <script>
+
+        var id = 0;//文章id
+        jQuery(function (id) {
+            //从url中获取文章的id
+            var thisParam = location.search.substring(1);
+            id = thisParam.split("=")[1];
+
+            //页面加载出来就直接去后端查找详细信息
+            jQuery.getJSON("initart",{
+                "id":id,//文章的id
+            },function (data) {
+                if (data != null && data.state == 200) {
+                    var articleinfo = data.articleinfo;
+                    jQuery("#title").val(articleinfo.title);
+                    jQuery("#content").val(articleinfo.content);
+                } else {
+                    alert("查询失败"+data.msg);
+                }
+            })
+        })
+
+        //数据修改提交
+        function myck(type) {
+
+            //为什么我在这里需要在获取一次文章的id！！！！！whywhywhy
+            var thisParam = location.search.substring(1);
+            id = thisParam.split("=")[1];
+
+            if (type == 2) {
+                if (confirm("确认清空吗？")){
+                    jQuery("#title").val("");
+                    jQuery("#content").val("");
+                    return false;
+                }
+            } else {
+                //去后端进行修改操作
+                var title = jQuery("#title");
+                var content = jQuery("#content");
+
+                //非空校验
+                if (title.val().trim() == "") {
+                    alert("请输入标题");
+                    title.focus();
+                    return false;
+                }
+                if (content.val().trim() == "") {
+                    alert("请输入正文");
+                    content.focus();
+                    return false;
+                }
+
+                jQuery.getJSON("upart",{
+                    "id":id,   //文章的id
+                    "title":title.val(),
+                    "content":content.val(),
+                },function (data) {
+                    if (data != null && data.state == 200) {
+                        //修改成功，将修改好的值在界面展示出来
+                        //这里不用将修改后的结果手动在界面展示出来，上面的代码会执行
+
+                        alert("修改成功");
+                    } else {
+                        alert("修改失败"+data.msg);
+                    }
+                })
+            }
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <h1>文章修改</h1>
+        标题<input type="text" id="title" name="title">
+        <p></p>
+        正文<textarea style="width: 50%; height: 300px;"  id="content" name="content"></textarea>
+        <p></p>
+        <input type="button" value="提交" onclick="myck(1)">
+        <input type="button" value="清空" onclick="myck(2)">
+    </div>
+</body>
+</html>

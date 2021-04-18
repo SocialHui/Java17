@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的文章列表</title>
+    <script src="jquery-1.9.1.min.js"></script>
+    <script>
+
+        function myck(timeFormat) {
+            var data = new Date(timeFormat);
+            //获得年
+            var y = data.getFullYear();
+            //获得月
+            var m = data.getMonth()+1;
+            //获得日期
+            var d = data.getDate();
+            return y+"-"+m+"-"+d;
+        }
+
+        function mydel(id){
+            if (confirm("确认删除？")){
+                jQuery.getJSON("mydel",{
+                    //传递的是文章的id
+                    "id":id
+                },function (data) {
+                    if (data != null && data.succ == 200) {
+                        alert("操作成功");
+                        location.href = location.href;
+                    } else {
+                        alert("操作失败"+data.msg);
+                    }
+                });
+            }
+        }
+
+
+        jQuery(function () {
+            jQuery.getJSON("myartlist",{},function (data) {
+                if (data != null && data.list != null) {
+                    //代表查询成功
+                    //查询成功之后就在页面进行拼接
+                    var html = "";
+                    for (var i = 0; i < data.list.length; i++) {
+                        var articleinfo = data.list[i];
+                        html += "<tr>" +
+                            "<td>" + articleinfo.id+ "</td>" +
+                            "<td>" +
+
+                            "<a href='datail.html?id="+articleinfo.id+"'>"+articleinfo.title+"</a>" +
+
+                            "</td>" +
+                            "<td>" + myck(articleinfo.createtime) + "</td>" +
+                            "<td>" + articleinfo.rcount + "</td>" +
+                            "<td>" +
+
+                            "<a href='upart.html?id="+articleinfo.id+"'>修改</a>" +
+
+                            //点击删除的话直接去后台进行删除操作，不需要重新进行页面跳转
+                            //所以不能使用location.href=""
+                            "<a href='javascript:mydel("+articleinfo.id+");'>删除</a>" +
+
+                            "</td>" +
+
+                            "</tr>"
+                    }
+                    jQuery("#tab").append(html);
+                } else {
+                    //查询失败
+                    alert("查询失败"+data.msg);
+                }
+            })
+        })
+    </script>
+</head>
+<body>
+     <div style="text-align: center">
+         <h1>我的文章列表</h1>
+         <hr>
+         <a href="addart.html">添加文章</a>
+         <table id="tab" border="1" cellspacing="0" style="margin-left: 100px; width: 80%">
+             <tr>
+                 <td>编号</td>
+                 <td>标题</td>
+                 <td>创建时间</td>
+                 <td>阅读量</td>
+                 <td>操作</td>
+             </tr>
+         </table>
+     </div>
+</body>
+</html>
