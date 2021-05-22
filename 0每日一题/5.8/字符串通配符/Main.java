@@ -33,3 +33,20 @@ public class Main{
         }
     }
 }
+
+/*
+        用例:
+        cxtsbywrpggq*i?moporwlokxyldd*jc
+        cxtsbywrpggqiiymopoywlokxylddrjc
+        i?iyuilcdhtz?y
+        iziyuilcdmtzay
+
+        对应输出应该为:
+
+        false
+        false
+
+        你的输出为:
+
+        true
+        false*/
