@@ -23,6 +23,8 @@ public class Main{
              * i == 3    3 < 3.几
              * i == 4    4 < 3.几不成立，  但是set里面没有存储13这个值
              */
+
+           //如果不进行sqrt直接计算，会导致世家复杂度过大
             if (n !=1) {
                 System.out.println(set.size()+1);
             } else {
